@@ -3,8 +3,6 @@ from brainflow.data_filter import DataFilter, FilterTypes, AggOperations, Window
 
 import serial.tools.list_ports
 import time
-import matplotlib.pyplot as plt
-import sched
 
 def get_alpha_beta(board, board_id):
     data = board.get_board_data()
@@ -20,13 +18,13 @@ def get_alpha_beta(board, board_id):
     alpha = DataFilter.get_band_power(psd, 7.0, 13.0)
     beta = DataFilter.get_band_power(psd, 14.0, 30.0)
 
-    return alpha / beta
+    print(alpha / beta)
 
 def main():
     # setup
     board_id = BoardIds.SYNTHETIC_BOARD
     params = BrainFlowInputParams()
-    
+
     # ports = serial.tools.list_ports.comports()
     # print("---PORTS---")
     # for port, desc, hwid in sorted(ports):
@@ -40,10 +38,13 @@ def main():
     board.start_stream()
 
     # retrive data
-    time.sleep(10)
-    print(get_alpha_beta(board, board_id))
-    if board.is_prepared():
-        board.release_session()
+    try:
+        while True:
+            time.sleep(5)
+            get_alpha_beta(board, board_id)
+    finally:
+        if board.is_prepared():
+            board.release_session()
 
 if __name__ == "__main__":
     main()
