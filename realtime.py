@@ -4,8 +4,11 @@ from brainflow.data_filter import DataFilter, FilterTypes, AggOperations, Window
 import serial.tools.list_ports
 import time
 
+import numpy as np
+import matplotlib.pyplot as plt
+
 def get_alpha_beta(board, board_id):
-    data = board.get_board_data()
+    data = board.get_current_board_data(256)
 
     eeg_channels = BoardShim.get_eeg_channels(board_id)
     eeg_channel = eeg_channels[1]
@@ -18,18 +21,20 @@ def get_alpha_beta(board, board_id):
     alpha = DataFilter.get_band_power(psd, 7.0, 13.0)
     beta = DataFilter.get_band_power(psd, 14.0, 30.0)
 
-    print(alpha / beta)
+    # print(alpha)
+    return alpha
 
 def main():
     # setup
-    board_id = BoardIds.SYNTHETIC_BOARD
+    board_id = BoardIds.GANGLION_BOARD
     params = BrainFlowInputParams()
 
-    # ports = serial.tools.list_ports.comports()
-    # print("---PORTS---")
-    # for port, desc, hwid in sorted(ports):
-    #     print(f"{port}: {desc} [{hwid}]")
-    # params.serial_port = ""
+    ports = serial.tools.list_ports.comports()
+    print("---PORTS---")
+    for port, desc, hwid in sorted(ports):
+        print(f"{port}: {desc} [{hwid}]")
+    params.serial_port = "/dev/cu.usbmodem11"
+    print("---ENDPORTS---")
 
     # create a board
     board = BoardShim(board_id, params)
@@ -38,13 +43,19 @@ def main():
     board.start_stream()
 
     # retrive data
+    data = []
     try:
-        while True:
-            time.sleep(5)
-            get_alpha_beta(board, board_id)
+        time.sleep(5)
+        while len(data) < 50:
+            time.sleep(1)
+            datum = get_alpha_beta(board, board_id)
+            data.append(datum)
     finally:
         if board.is_prepared():
             board.release_session()
+
+    plt.plot(data)
+    plt.show()
 
 if __name__ == "__main__":
     main()

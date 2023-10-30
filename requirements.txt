@@ -4,3 +4,5 @@ pandas
 brainflow
 scipy
 pyserial
+PyQt6
+pyqtgraph

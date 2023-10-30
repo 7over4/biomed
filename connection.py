@@ -24,14 +24,16 @@ def get_alpha_beta(board, board_id):
 
 def main():
     # setup
-    board_id = BoardIds.SYNTHETIC_BOARD
+    print("running")
+    board_id = BoardIds.GANGLION_BOARD
     params = BrainFlowInputParams()
     
-    # ports = serial.tools.list_ports.comports()
-    # print("---PORTS---")
-    # for port, desc, hwid in sorted(ports):
-    #     print(f"{port}: {desc} [{hwid}]")
-    # params.serial_port = ""
+    ports = serial.tools.list_ports.comports()
+    print("---PORTS---")
+    for port, desc, hwid in sorted(ports):
+        print(f"{port}: {desc} [{hwid}]")
+    params.serial_port = "/dev/cu.usbmodem11"
+    print("---ENDPORTS---")
 
     # create a board
     board = BoardShim(board_id, params)
