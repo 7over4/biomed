@@ -6,3 +6,12 @@ scipy
 pyserial
 PyQt6
 pyqtgraph
+ipykernel
+huggingface_hub
+Braindecode
+chardet
+tqdm
+torch 
+torchvision 
+torchaudio
+torchsummary
