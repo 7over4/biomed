@@ -32,7 +32,7 @@ def main():
     print("---PORTS---")
     for port, desc, hwid in sorted(ports):
         print(f"{port}: {desc} [{hwid}]")
-    params.serial_port = "/dev/cu.usbmodem11"
+    params.serial_port = "COM3"
     print("---ENDPORTS---")
 
     # create a board

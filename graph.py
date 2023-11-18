@@ -51,12 +51,12 @@ class RealTime(QtWidgets.QMainWindow):
         for count, channel in enumerate(self.exg_channels):
             # plot timeseries
             DataFilter.detrend(data[channel], DetrendOperations.CONSTANT.value)
-            DataFilter.perform_bandpass(data[channel], self.sampling_rate, 3.0, 45.0, 2,
+            DataFilter.perform_bandpass(data[channel], self.sampling_rate, 0.5, 55.0, 2,
                                         FilterTypes.BUTTERWORTH_ZERO_PHASE, 0)
-            DataFilter.perform_bandstop(data[channel], self.sampling_rate, 48.0, 52.0, 2,
-                                        FilterTypes.BUTTERWORTH_ZERO_PHASE, 0)
-            DataFilter.perform_bandstop(data[channel], self.sampling_rate, 58.0, 62.0, 2,
-                                        FilterTypes.BUTTERWORTH_ZERO_PHASE, 0)
+            #DataFilter.perform_bandstop(data[channel], self.sampling_rate, 48.0, 52.0, 2,
+            #                            FilterTypes.BUTTERWORTH_ZERO_PHASE, 0)
+            #DataFilter.perform_bandstop(data[channel], self.sampling_rate, 58.0, 62.0, 2,
+            #                            FilterTypes.BUTTERWORTH_ZERO_PHASE, 0)
             self.curves[count].setData(data[channel].tolist())
 
 class Mindfulness(QtWidgets.QMainWindow):
@@ -121,14 +121,14 @@ class Mindfulness(QtWidgets.QMainWindow):
 
 def main():
     params = BrainFlowInputParams()
-    params.serial_port = "/dev/cu.usbmodem11"
+    params.serial_port = "COM3"
 
     board_shim = BoardShim(BoardIds.GANGLION_BOARD, params)
     try:
         board_shim.prepare_session()
         board_shim.start_stream(450000)
         app = QtWidgets.QApplication(sys.argv)
-        w = Mindfulness(board_shim)
+        w = RealTime(board_shim)
         w.show()
         sys.exit(app.exec())
     except BaseException:
